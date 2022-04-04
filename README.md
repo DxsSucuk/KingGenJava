@@ -1,5 +1,6 @@
 # KingGen Java
-###### API Wrapper developed for KingGen by Presti (Azura Dev)
+[![](https://jitpack.io/v/DxsSucuk/KingGenJava.svg)](https://jitpack.io/#DxsSucuk/KingGenJava)
+###### API Wrapper developed for KingGen by Presti (Azura Dev) 
 
 ## How to use?
 You have to create a new Instance of the KingGen Wrapper. Example:
