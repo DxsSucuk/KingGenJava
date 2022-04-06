@@ -1,8 +1,6 @@
 package wtf.kinggen.api;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import wtf.kinggen.entities.KingGenAccount;
 import wtf.kinggen.entities.KingGenProfile;
 import wtf.kinggen.entities.KingGenResponse;
@@ -22,6 +20,8 @@ import java.util.stream.Collectors;
  * A Request-Utility class for the KingGen Request.
  */
 public class Request {
+
+    // Instance of GSON.
 
     // The formatted Request URL.
     private final String requestUrl;

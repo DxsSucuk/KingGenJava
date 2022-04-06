@@ -1,12 +1,17 @@
 package wtf.kinggen.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Entity class, to store information about a generated Account.
  */
 public class KingGenAccount {
 
-    // Account specific Data.
-    private final String accountEmail, accountPassword;
+    // The Email of the generated Account.
+    private final String accountEmail;
+
+    // The Password of the generated Account.
+    private final String accountPassword;
 
     // Current Stock.
     private final int stock;
