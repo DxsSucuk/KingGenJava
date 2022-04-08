@@ -5,8 +5,8 @@ import wtf.kinggen.api.Request;
 import wtf.kinggen.entities.KingGenAccount;
 import wtf.kinggen.entities.KingGenProfile;
 import wtf.kinggen.entities.KingGenResponse;
+import wtf.kinggen.entities.KingGenStock;
 import wtf.kinggen.exceptions.KingGenInvalidOperationException;
-import wtf.kinggen.exceptions.KingGenInvalidResponseException;
 
 /**
  * Wrapper Main class, used to store the API-Key as well as do the direct data processing and requesting.
@@ -74,6 +74,20 @@ public class KingGen {
 
         if (kingGenResponse.getKingGenProfile() != null) {
             return kingGenProfile = kingGenResponse.getKingGenProfile();
+        }
+
+        throw new KingGenInvalidOperationException("Response does not contain a Profile!");
+    }
+
+    public KingGenStock fetchStock() throws Exception {
+        KingGenResponse kingGenResponse = request(Endpoint.PROFILE);
+
+        if (kingGenResponse.getKingGenProfile() != null) {
+            if (alwaysFetch) {
+                kingGenProfile = kingGenResponse.getKingGenProfile();
+            }
+
+            return new KingGenStock(kingGenResponse.getKingGenProfile().getStock());
         }
 
         throw new KingGenInvalidOperationException("Response does not contain a Profile!");

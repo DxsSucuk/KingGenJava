@@ -1,8 +1,11 @@
 package your.very.cool.project.or.what.ever.lol;
 
+import java.lang.Exception;
+
+import wtf.kinggen.KingGen;
 import wtf.kinggen.entities.KingGenAccount;
 
-public class GenerateAccount {
+public class GenerateAccount throws Exception {
 
     KingGen kingGen = new KingGen("Your API-Key");
 

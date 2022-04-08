@@ -1,7 +1,5 @@
 package wtf.kinggen.entities;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Entity class, to store information about a generated Account.
  */

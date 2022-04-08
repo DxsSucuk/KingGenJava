@@ -12,21 +12,28 @@ After creating a new Instance of the wrapper, you simply call the request method
 ```java
 package your.very.cool.project.or.what.ever.lol;
 
+import java.lang.Exception;
+
 import wtf.kinggen.KingGen;
 import wtf.kinggen.api.Endpoint;
 import wtf.kinggen.entities.KingGenAccount;
 import wtf.kinggen.entities.KingGenProfile;
+import wtf.kinggen.entities.KingGenStock;
 
 public class Tutorial {
 
     KingGen kingGen = new KingGen("Your API-Key");
 
-    public void generate() {
+    public void generate() throws Exception {
         KingGenAccount kingGenAccount = kingGen.generateAccount();
     }
 
-    public void profile() {
+    public void profile() throws Exception {
         KingGenProfile kingGenAccount = kingGen.fetchProfile();
+    }
+
+    public void stock() throws Exception {
+        KingGenStock kingGenStock = kingGen.fetchStock();
     }
 }
 ```
