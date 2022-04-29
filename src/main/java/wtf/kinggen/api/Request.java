@@ -72,8 +72,8 @@ public class Request {
                 JsonObject jsonObject = jsonElement.getAsJsonObject();
                 if (endpoint == Endpoint.GENERATE) {
                     // Check if the Object contains the Alt specific data, if not throw exception.
-                    if (jsonObject.has("email") && jsonObject.has("password") && jsonObject.has("stock")) {
-                        return new KingGenResponse(new KingGenAccount(jsonObject.get("email").getAsString(), jsonObject.get("password").getAsString(), jsonObject.get("stock").getAsInt()));
+                    if (jsonObject.has("email") && jsonObject.has("password")) {
+                        return new KingGenResponse(new KingGenAccount(jsonObject.get("email").getAsString(), jsonObject.get("password").getAsString()));
                     } else {
                         throw new KingGenInvalidResponseException(responseContent);
                     }

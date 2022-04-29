@@ -11,19 +11,14 @@ public class KingGenAccount {
     // The Password of the generated Account.
     private final String accountPassword;
 
-    // Current Stock.
-    private final int stock;
-
     /**
      * Constructor to store the Data.
      * @param accountEmail the Email of the Account.
      * @param accountPassword the Password of the Account.
-     * @param stock the left Stock.
      */
-    public KingGenAccount(String accountEmail, String accountPassword, int stock) {
+    public KingGenAccount(String accountEmail, String accountPassword) {
         this.accountEmail = accountEmail;
         this.accountPassword = accountPassword;
-        this.stock = stock;
     }
 
     /**
@@ -40,13 +35,5 @@ public class KingGenAccount {
      */
     public String getAccountPassword() {
         return accountPassword;
-    }
-
-    /**
-     * Retrieve the stored Stock value.
-     * @return the Stock value.
-     */
-    public int getStock() {
-        return stock;
     }
 }
