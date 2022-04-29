@@ -4,7 +4,7 @@
 
 ###### API Wrapper developed for KingGen by Presti (Azura Dev)
 
-##Maven
+## Maven
 ```xml
 <repositories>
   <repository>
