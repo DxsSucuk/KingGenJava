@@ -5,15 +5,15 @@ import java.lang.Exception;
 import wtf.kinggen.KingGen;
 import wtf.kinggen.entities.KingGenAccount;
 
-public class GenerateAccount throws Exception {
+public class FetchAccount {
 
     KingGen kingGen = new KingGen("Your API-Key");
 
-    public void main() {
+    public void main() throws Exception {
 
-        KingGenAccount kingGenAccount = kingGen.generateAccount();
+        KingGenAccount kingGenAccount = kingGen.fetchAccount();
 
-        // Your login code or call right here.
+        // Your login code call right here.
         loginInVeryCoolAccount(kingGenAccount.getAccountEmail(), kingGenAccount.getAccountPassword());
     }
 }

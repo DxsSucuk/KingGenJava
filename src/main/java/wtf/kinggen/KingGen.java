@@ -8,6 +8,9 @@ import wtf.kinggen.entities.KingGenResponse;
 import wtf.kinggen.entities.KingGenStock;
 import wtf.kinggen.exceptions.KingGenInvalidOperationException;
 
+import java.io.InvalidObjectException;
+import java.util.function.Consumer;
+
 /**
  * Wrapper Main class, used to store the API-Key as well as do the direct data processing and requesting.
  * @author Presti
@@ -41,8 +44,26 @@ public class KingGen {
      * @return a {@link KingGenResponse} with the requested Account/Profile.
      * @throws Exception if the URL is malformed, the API-Key is invalid or blacklisted, KingGen is out of stock, the Server responded with an Invalid Response the Request itself is invalid.
      */
-    public KingGenResponse request(Endpoint endpoint) throws Exception {
+    public KingGenResponse fetch(Endpoint endpoint) throws Exception {
         return new Request(endpoint, apiKey).request();
+    }
+
+    /**
+     * Send a Request to the wanted Endpoint.
+     * @param endpoint the {@link Endpoint}.
+     * @param success a {@link Consumer<KingGenResponse>} used as Callback if the request was successful.
+     * @param failed a {@link Consumer<Throwable>} used as Callback if the request failed.
+     * @throws InvalidObjectException if the given {@param success} is null.
+     */
+    public void fetchASync(Endpoint endpoint, Consumer<KingGenResponse> success, Consumer<Throwable> failed) throws InvalidObjectException {
+        if (success == null) throw new InvalidObjectException("Callback Consumer success can not be null.");
+        new Thread(() -> {
+            try {
+                success.accept(new Request(endpoint, apiKey).request());
+            } catch (Exception exception) {
+                if (failed != null) failed.accept(exception);
+            }
+        }).start();
     }
 
     /**
@@ -50,8 +71,8 @@ public class KingGen {
      * @return a new Account in an Instance of  {@link KingGenAccount}.
      * @throws Exception if there was a problem with getting the Account.
      */
-    public KingGenAccount generateAccount() throws Exception {
-        KingGenResponse kingGenResponse = request(Endpoint.GENERATE);
+    public KingGenAccount fetchAccount() throws Exception {
+        KingGenResponse kingGenResponse = fetch(Endpoint.GENERATE);
 
         if (alwaysFetch) {
             fetchProfile();
@@ -65,12 +86,38 @@ public class KingGen {
     }
 
     /**
+     * Fetch a new Account ASync.
+     * @param success a {@link Consumer<KingGenAccount>} used as Callback if the request was successful.
+     * @param failed a {@link Consumer<Throwable>} used as Callback if the request failed.
+     * @throws InvalidObjectException if the given {@param success} is null.
+     */
+    public void fetchAccountASync(Consumer<KingGenAccount> success, Consumer<Throwable> failed) throws InvalidObjectException {
+        fetchASync(Endpoint.GENERATE, kingGenResponse -> {
+            if (alwaysFetch) {
+                try {
+                    fetchProfileASync(null, failed);
+                } catch (InvalidObjectException exception) {
+                    failed.accept(exception);
+                    return;
+                }
+            }
+
+            if (kingGenResponse.getKingGenAccount() != null) {
+                if (success != null) success.accept(lastAccount = kingGenResponse.getKingGenAccount());
+                return;
+            }
+
+            if (failed != null) failed.accept(new KingGenInvalidOperationException("Response does not contain a Account!"));
+        }, failed);
+    }
+
+    /**
      * Fetch the {@link KingGenProfile} for overall information on the user.
      * @return an Instance of the {@link KingGenProfile}.
      * @throws Exception if there was a problem with getting the Profile.
      */
     public KingGenProfile fetchProfile() throws Exception {
-        KingGenResponse kingGenResponse = request(Endpoint.PROFILE);
+        KingGenResponse kingGenResponse = fetch(Endpoint.PROFILE);
 
         if (kingGenResponse.getKingGenProfile() != null) {
             return kingGenProfile = kingGenResponse.getKingGenProfile();
@@ -79,8 +126,30 @@ public class KingGen {
         throw new KingGenInvalidOperationException("Response does not contain a Profile!");
     }
 
+    /**
+     * Fetch the {@link KingGenProfile} for overall information on the user ASync.
+     * @param success a {@link Consumer<KingGenProfile>} used as Callback if the request was successful.
+     * @param failed a {@link Consumer<Throwable>} used as Callback if the request failed.
+     * @throws InvalidObjectException if the given {@param success} is null.
+     */
+    public void fetchProfileASync(Consumer<KingGenProfile> success, Consumer<Throwable> failed) throws InvalidObjectException {
+        fetchASync(Endpoint.PROFILE, kingGenResponse -> {
+            if (kingGenResponse.getKingGenProfile() != null) {
+                if (success != null) success.accept(kingGenProfile = kingGenResponse.getKingGenProfile());
+                return;
+            }
+
+            if (failed != null) failed.accept(new KingGenInvalidOperationException("Response does not contain a Profile!"));
+        }, failed);
+    }
+
+    /**
+     * Fetch the {@link KingGenStock} to find out how many accounts are available.
+     * @return an Instance of the {@link KingGenStock}.
+     * @throws Exception if there was a problem with getting the Stock-Information.
+     */
     public KingGenStock fetchStock() throws Exception {
-        KingGenResponse kingGenResponse = request(Endpoint.PROFILE);
+        KingGenResponse kingGenResponse = fetch(Endpoint.PROFILE);
 
         if (kingGenResponse.getKingGenProfile() != null) {
             if (alwaysFetch) {
@@ -91,6 +160,27 @@ public class KingGen {
         }
 
         throw new KingGenInvalidOperationException("Response does not contain a Profile!");
+    }
+
+    /**
+     * Fetch the {@link KingGenStock} to find out how many accounts are available ASync.
+     * @param success a {@link Consumer<KingGenStock>} used as Callback if the request was successful.
+     * @param failed a {@link Consumer<Throwable>} used as Callback if the request failed.
+     * @throws InvalidObjectException if the given {@param success} is null.
+     */
+    public void fetchStockASync(Consumer<KingGenStock> success, Consumer<Throwable> failed) throws InvalidObjectException {
+        fetchASync(Endpoint.PROFILE, kingGenResponse -> {
+            if (kingGenResponse.getKingGenProfile() != null) {
+                if (alwaysFetch) {
+                    kingGenProfile = kingGenResponse.getKingGenProfile();
+                }
+
+                success.accept(new KingGenStock(kingGenResponse.getKingGenProfile().getStock()));
+                return;
+            }
+
+            failed.accept(new KingGenInvalidOperationException("Response does not contain a Profile!"));
+        }, failed);
     }
 
     /**

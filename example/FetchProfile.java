@@ -5,11 +5,11 @@ import java.lang.Exception;
 import wtf.kinggen.KingGen;
 import wtf.kinggen.entities.KingGenProfile;
 
-public class FetchProfile throws Exception {
+public class FetchProfile {
 
     KingGen kingGen = new KingGen("Your API-Key");
 
-    public void main() {
+    public void main() throws Exception {
 
         KingGenProfile kingGenAccount = kingGen.fetchProfile();
 
