@@ -12,4 +12,13 @@ public class KingGenInvalidRequestException extends Exception {
         super("The created Request is not valid.");
     }
 
+    /**
+     * Generates a generic Invalid-Request Exception.
+     *
+     * @param reason The Reason of why it is Invalid.
+     */
+    public KingGenInvalidRequestException(String reason) {
+        super("The created Request is not valid. Reason for this is, " + reason);
+    }
+
 }

@@ -11,6 +11,6 @@ public class FetchAccountASync {
     KingGen kingGen = new KingGen("Your API-Key");
 
     public void main() throws Exception {
-        kingGen.fetchAccountASync(kingGenAccount -> login(kingGenAccount.getAccountEmail(), kingGenAccount.getAccountPassword()), throwable -> throwable.printStackTrace());
+        kingGen.fetchAccountASync(kingGenAccount -> login(kingGenAccount.getEmail(), kingGenAccount.getPassword()), throwable -> throwable.printStackTrace());
     }
 }

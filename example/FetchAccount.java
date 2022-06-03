@@ -14,6 +14,6 @@ public class FetchAccount {
         KingGenAccount kingGenAccount = kingGen.fetchAccount();
 
         // Your login code call right here.
-        loginInVeryCoolAccount(kingGenAccount.getAccountEmail(), kingGenAccount.getAccountPassword());
+        loginInVeryCoolAccount(kingGenAccount.getEmail(), kingGenAccount.getPassword());
     }
 }

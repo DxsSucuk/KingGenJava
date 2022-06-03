@@ -1,20 +1,26 @@
 package wtf.kinggen.entities;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Entity class, to store information about a requested Profile.
  */
 public class KingGenProfile {
 
     // The Username of the Profile.
+    @SerializedName("username")
     private final String username;
 
     // The overall Generated Alts.
+    @SerializedName("generated")
     private final int generated;
 
     // The amount of Alts generated today.
+    @SerializedName("generatedToday")
     private final int generatedToday;
 
     // The amount of accounts left in the Gen.
+    @SerializedName("stock")
     private final int stock;
 
     /**

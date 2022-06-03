@@ -60,7 +60,7 @@ public class Tutorial {
 
     public void generateASync() throws Exception {
         kingGen.fetchAccountASync(kingGenAccount ->
-                login(kingGenAccount.getAccountEmail(), kingGenAccount.getAccountPassword()),
+                        login(kingGenAccount.getEmail(), kingGenAccount.getPassword()),
                 Throwable::printStackTrace);
     }
 

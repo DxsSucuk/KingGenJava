@@ -4,10 +4,7 @@ import com.google.gson.*;
 import wtf.kinggen.entities.KingGenAccount;
 import wtf.kinggen.entities.KingGenProfile;
 import wtf.kinggen.entities.KingGenResponse;
-import wtf.kinggen.exceptions.KingGenInvalidApiKeyException;
-import wtf.kinggen.exceptions.KingGenInvalidRequestException;
-import wtf.kinggen.exceptions.KingGenInvalidResponseException;
-import wtf.kinggen.exceptions.KingGenOutOfStockException;
+import wtf.kinggen.exceptions.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -65,36 +62,28 @@ public class Request {
 
         // Check if the Server response was valid, if so continue parsing the data.
         if (httpURLConnection.getResponseCode() == 200) {
-            JsonElement jsonElement = JsonParser.parseString(responseContent);
-
-            // Check if it is a valid JsonObject.
-            if (jsonElement.isJsonObject()) {
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                if (endpoint == Endpoint.GENERATE) {
-                    // Check if the Object contains the Alt specific data, if not throw exception.
-                    if (jsonObject.has("email") && jsonObject.has("password")) {
-                        return new KingGenResponse(new KingGenAccount(jsonObject.get("email").getAsString(), jsonObject.get("password").getAsString()));
-                    } else {
-                        throw new KingGenInvalidResponseException(responseContent);
+            try {
+                // Check if the Endpoint is a Profile or not, if so then try to parse it into a KingGenProfile. Same for KingGenAccount.
+                switch (endpoint) {
+                    case PROFILE: {
+                        return new KingGenResponse(new GsonBuilder().create().fromJson(responseContent, KingGenProfile.class));
                     }
-                } else if (endpoint == Endpoint.PROFILE) {
-                    // Check if the Object contains the Profile specific data, if not throw exception.
-                    if (jsonObject.has("username") && jsonObject.has("generated") && jsonObject.has("generatedToday") && jsonObject.has("stock")) {
-                        return new KingGenResponse(new KingGenProfile(jsonObject.get("username").getAsString(), jsonObject.get("generated").getAsInt(), jsonObject.get("generatedToday").getAsInt(), jsonObject.get("stock").getAsInt()));
-                    } else {
-                        throw new KingGenInvalidResponseException(responseContent);
+                    case GENERATE: {
+                        return new KingGenResponse(new GsonBuilder().create().fromJson(responseContent, KingGenAccount.class));
                     }
-                } else {
-                    // Throw an Exception, because the given Endpoint has not been implemented yet.
-                    throw new KingGenInvalidRequestException();
+                    default: {
+                        throw new KingGenInvalidRequestException("Endpoint not implemented.");
+                    }
                 }
-            } else {
-                // Throw an Exception since the response is not a valid JsonObject.
-                throw new KingGenInvalidResponseException(responseContent);
+            } catch (Exception exception) {
+                throw new KingGenInvalidOperationException("Unknown failure while trying to parse data! Exception: " + exception.getMessage());
             }
         } else if (endpoint == Endpoint.GENERATE && httpURLConnection.getResponseCode() == 204) {
             // Throw since it returned an empty response.
             throw new KingGenOutOfStockException();
+        } else if (endpoint == Endpoint.GENERATE && httpURLConnection.getResponseCode() == 403) {
+            // Throw since it returned an empty response.
+            throw new KingGenReachedLimitException();
         } else if (httpURLConnection.getResponseCode() == 401) {
             // Throw since a Not Authorized Response has been given.
             throw new KingGenInvalidApiKeyException();
