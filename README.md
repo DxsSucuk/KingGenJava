@@ -81,7 +81,7 @@ Non-ASync methods will give you a Profile or a generated Account if it was succe
 that you have to handle yourself. But ASync methods will not return anything and will throw an Exception if the success Callback is null.
 
 ## Note
-The version after 1.2.0 have been inspired by https://github.com/unsmxrt/kinggen-java
+The versions after 1.2.0 have been inspired by [unsmxrt](https://github.com/unsmxrt/kinggen-java)
 
 ## If you have Issues implementing it.
 
